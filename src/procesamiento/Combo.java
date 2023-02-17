@@ -6,16 +6,16 @@ public class Combo implements Producto{
 	
 	
 	//Atributos
-	private double descuento;
+	private int descuento;
 	
 	private String nombre;
 	
-	private ArrayList<Producto> combo;
+	private ArrayList<String> combo;
 	
-	public Combo(String nombre, double descuento, Producto p1, Producto p2, Producto p3) {
+	public Combo(String nombre, int descuento, String p1, String p2, String p3) {
 		this.nombre = nombre;
 		this.descuento = descuento;
-		ArrayList<Producto> elCombo = new ArrayList<Producto>();
+		ArrayList<String> elCombo = new ArrayList<String>();
 		elCombo.add(p1);
 		elCombo.add(p2);
 		elCombo.add(p3);
@@ -26,7 +26,7 @@ public class Combo implements Producto{
 	@Override
 	public int getPrecio() {
 		// TODO Auto-generated method stub
-		return precio;
+		return descuento;
 	}
 
 	@Override

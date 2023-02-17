@@ -97,12 +97,16 @@ public class Restaurante {
 		String linea = br.readLine();
 		while (linea != null) {
 			String[] partes = linea.split(";");
-			String nombreIngrediente = partes[0];
-			int costoAd = Integer.parseInt(partes[1]);
+			String nombreCombo = partes[0];
+			String descuentoStr = partes[1];
+			String descuentoArreglado = descuentoStr.replace("%","");
+			int costoDisc = Integer.parseInt(descuentoArreglado);
+			String nombreP1 = partes[2];
+			String nombreP2 = partes[3];
+			String nombreP3 = partes[4];
 			
-			
-			Ingrediente ingredienteNuevo = new Ingrediente(nombreIngrediente, costoAd);
-			ingredientes.add(ingredienteNuevo);
+			Combo comboNuevo = new Combo(nombreCombo, costoDisc, nombreP1, nombreP2, nombreP3);
+			combos.add(comboNuevo);
 			}
 		br.close();
 	
