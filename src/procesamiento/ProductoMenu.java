@@ -15,11 +15,11 @@ public class ProductoMenu implements Producto {
 	//Atributos
 	private String nombre;
 	
-	private int precioBase;
+	private double precioBase;
 	
 	
 	//constructor
-	public ProductoMenu(String name, int basePrice) {
+	public ProductoMenu(String name, double basePrice) {
 		// TODO Auto-generated constructor stub
 		this.precioBase=basePrice;
 		this.nombre=name;
@@ -27,7 +27,7 @@ public class ProductoMenu implements Producto {
 	}
 
 	@Override
-	public int getPrecio() {
+	public double getPrecio() {
 		// TODO Auto-generated method stub
 		return precioBase;
 	}

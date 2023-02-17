@@ -1,7 +1,7 @@
 package procesamiento;
 
 public interface Producto{
-	public int getPrecio();
+	public double getPrecio();
 	
 	public String getNombre();
 	

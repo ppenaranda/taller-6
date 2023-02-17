@@ -28,6 +28,8 @@ public class Restaurante {
 	}
 	
 	public void iniciarPedido(String nombreCliente, String direccionCliente) {
+		Pedido pedido = new Pedido(nombreCliente, direccionCliente);
+		pedidos.put(pedido.getIdPedido(), pedido);
 		
 	}
 	
@@ -35,21 +37,44 @@ public class Restaurante {
 		
 	}
 	
-	//public Pedido getPedidoEnCurso() {
-		
-	//}
+	public Pedido getPedidoEnCurso() {
+		Pedido pedido = pedidos.get(Pedido.getPedidoNum());
+		return pedido;
+	}
 	
-	//public ArrayList<Producto> getMenuBase(){
+	public ArrayList<ProductoMenu> getMenuBase(){
+		return menuBase;
 		
-	//}
+	}
 	
-	//public ArrayList<Ingrediente> getIngredientes(){
+	public ArrayList<Ingrediente> getIngredientes(){
+		return ingredientes;
+	}
+	
+	public ArrayList<Combo> getCombos(){
+		return combos;	
+	}
+	
+	
+	public void crearCombos() {
+		for (Combo combo: combos) {
+			ArrayList<String> comboNombre = combo.getComboNombre();
+			for (String productoNombre : comboNombre) {
+				for (Producto producto : menuBase) {
+					if(productoNombre.equals(producto.getNombre())) {
+						combo.agregarItem(producto);
+					}
+				}
+			}
+			
+		}
 		
-	//}
+	}
 	public void cargarInformacionRestaurante(File archivoIngredientes, File archivoMenu, File archivoCombos) throws IOException {
 		cargarIngredientes(archivoIngredientes);
 		cargarMenu(archivoMenu);
-		cargarCombos(archivoMenu);
+		cargarCombos(archivoCombos);
+		crearCombos();
 	}
 	
 	private void cargarIngredientes(File archivoIngredientes) throws IOException {
@@ -63,6 +88,7 @@ public class Restaurante {
 			
 			Ingrediente ingredienteNuevo = new Ingrediente(nombreIngrediente, costoAd);
 			ingredientes.add(ingredienteNuevo);
+			linea = br.readLine();
 			}
 		br.close();
 		
@@ -87,6 +113,7 @@ public class Restaurante {
 			
 			ProductoMenu ProductoNuevoMenu = new ProductoMenu(nombreProducto, precioProducto);
 			menuBase.add(ProductoNuevoMenu);
+			linea = br.readLine();
 			}
 		br.close();
 	
@@ -97,6 +124,7 @@ public class Restaurante {
 		String linea = br.readLine();
 		while (linea != null) {
 			String[] partes = linea.split(";");
+			
 			String nombreCombo = partes[0];
 			String descuentoStr = partes[1];
 			String descuentoArreglado = descuentoStr.replace("%","");
@@ -107,6 +135,7 @@ public class Restaurante {
 			
 			Combo comboNuevo = new Combo(nombreCombo, costoDisc, nombreP1, nombreP2, nombreP3);
 			combos.add(comboNuevo);
+			linea = br.readLine();
 			}
 		br.close();
 	
