@@ -17,7 +17,7 @@ public class Restaurante {
 	private ArrayList<Ingrediente> ingredientes;
 	
 	private HashMap<Integer, Pedido> pedidos;
-	
+	// Se inicializa un restaurante al cual se le van a introducir los datos//
 	public Restaurante() {
 		this.menuBase = new ArrayList<ProductoMenu>();
 		this.combos = new ArrayList<Combo>();
@@ -26,15 +26,38 @@ public class Restaurante {
 		
 		
 	}
-	
+	// Indica el inicio de un pedido//
 	public void iniciarPedido(String nombreCliente, String direccionCliente) {
 		Pedido pedido = new Pedido(nombreCliente, direccionCliente);
 		pedidos.put(pedido.getIdPedido(), pedido);
 		
 	}
 	
+	public Pedido obtenerPedidoId(int id) {
+	    try {
+	        Pedido pedido = pedidos.get(id);
+	        return pedido;
+	    } catch (IndexOutOfBoundsException e) {
+	        throw new IllegalArgumentException("No se encontró pedido asignado al ID");
+	    }
+	}
+	
 	public void cerrarYGuardarPedido() {
-		
+		Pedido pedido = getPedidoEnCurso();
+		pedidos.replace(Pedido.getPedidoNum(), pedido);
+		String precioTotal = Double.toString(pedido.PrecioTotalPedido());
+		String precioNeto = Double.toString(pedido.getPrecioNetoPedido());
+		String precioIva = Double.toString(pedido.getPrecioIVAPedido());
+		String id = Integer.toString(pedido.getIdPedido());
+		System.out.println("El pedido total es:\n");
+		ArrayList<Producto> pedidoProductos = pedido.getProductos();
+		for (Producto producto : pedidoProductos) {
+			System.out.println(producto.getNombre()+ ": $" + Double.toString(producto.getPrecio())+ "\n");
+		}
+		System.out.println("Valor neto del pedido: $"+ precioNeto + "\n");
+		System.out.println("Valor del IVA del 19% del pedido: $"+ precioIva + "\n");
+		System.out.println("Valor total del pedido: $"+ precioTotal + "\n");
+		System.out.println("ID del pedido: "+ id + "\n");
 	}
 	
 	public Pedido getPedidoEnCurso() {
@@ -55,6 +78,16 @@ public class Restaurante {
 		return combos;	
 	}
 	
+	public void agregarComboPedido(int index) {
+		Pedido pedido = getPedidoEnCurso();
+		Combo combo = combos.get(index-1);
+		pedido.agregarProducto(combo);
+	}
+	public void agregarProductoPedido(int index) {
+		Pedido pedido = getPedidoEnCurso();
+		ProductoMenu producto = menuBase.get(index-1);
+		pedido.agregarProducto(producto);
+	}
 	
 	public void crearCombos() {
 		for (Combo combo: combos) {
@@ -70,6 +103,8 @@ public class Restaurante {
 		}
 		
 	}
+	//Se cargan los 3 diferentes archivos desde data//
+	//Se crean los combos//
 	public void cargarInformacionRestaurante(File archivoIngredientes, File archivoMenu, File archivoCombos) throws IOException {
 		cargarIngredientes(archivoIngredientes);
 		cargarMenu(archivoMenu);

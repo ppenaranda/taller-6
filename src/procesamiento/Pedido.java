@@ -17,6 +17,13 @@ public class Pedido {
 		this.idPedido = numeroPedidos;
 	}
 	
+	public String getNombreCliente() {
+		return nombreCliente;
+	}
+	public String getDireccionCliente() {
+		return direccionCliente;
+	}
+	
 	public int getIdPedido() {
 		return idPedido;
 		
@@ -29,23 +36,30 @@ public class Pedido {
 	}
 	
 	
+	public ArrayList<Producto> getProductos(){
+		return pedidoProductos;
+	}
 	
+	public double getPrecioNetoPedido() {
+		double precioNeto = 0;
+		for (Producto producto: pedidoProductos) {
+			precioNeto += producto.getPrecio();
+		}
+		return precioNeto;
+	}
 	
-	//private int getPrecioNetoPedido() {
+	public double PrecioTotalPedido() {
+		double precioNeto = getPrecioNetoPedido();
+		double iva = getPrecioIVAPedido();
+		return precioNeto + iva;
+	}
 	
-	//}
+	public double getPrecioIVAPedido() {
+		double precioNeto = getPrecioNetoPedido();
+		double iva = (double) (precioNeto*0.19);
+		return iva;
+	}
 	
-	///private int PrecioTotalPedido() {
-		
-	///}
-	
-	//private int getPrecioIVAPedido() {
-		
-	//}
-	
-	//private String generarTextoFactura() {
-		
-	//}
 	
 	//public 	void guardarFactura(File archivo) {
 		
