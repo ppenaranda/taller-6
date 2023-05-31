@@ -1,5 +1,5 @@
 package procesamiento;
-
+import exceptions.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -27,10 +27,12 @@ public class Restaurante {
 		
 	}
 	// Indica el inicio de un pedido//
-	public void iniciarPedido(String nombreCliente, String direccionCliente) {
-		Pedido pedido = new Pedido(nombreCliente, direccionCliente);
-		pedidos.put(pedido.getIdPedido(), pedido);
-		
+	public void iniciarPedido(String nombreCliente, String direccionCliente) throws PedidoSuperadoException {
+	    Pedido pedido = new Pedido(nombreCliente, direccionCliente);
+	    if (pedido.getPrecioNetoPedido() > 150000) {
+	        throw new PedidoSuperadoException();
+	    }
+	    pedidos.put(pedido.getIdPedido(), pedido);
 	}
 	
 	public Pedido obtenerPedidoId(int id) {
@@ -78,15 +80,16 @@ public class Restaurante {
 		return combos;	
 	}
 	
-	public void agregarComboPedido(int index) {
-		Pedido pedido = getPedidoEnCurso();
-		Combo combo = combos.get(index-1);
-		pedido.agregarProducto(combo);
+	public void agregarComboPedido(int index) throws PedidoSuperadoException {
+	    Pedido pedido = getPedidoEnCurso();
+	    Combo combo = combos.get(index - 1);
+	    pedido.agregarProducto(combo);
 	}
-	public void agregarProductoPedido(int index) {
-		Pedido pedido = getPedidoEnCurso();
-		ProductoMenu producto = menuBase.get(index-1);
-		pedido.agregarProducto(producto);
+
+	public void agregarProductoPedido(int index) throws PedidoSuperadoException {
+	    Pedido pedido = getPedidoEnCurso();
+	    ProductoMenu producto = menuBase.get(index - 1);
+	    pedido.agregarProducto(producto);
 	}
 	
 	public void crearCombos() {
@@ -105,54 +108,54 @@ public class Restaurante {
 	}
 	//Se cargan los 3 diferentes archivos desde data//
 	//Se crean los combos//
-	public void cargarInformacionRestaurante(File archivoIngredientes, File archivoMenu, File archivoCombos) throws IOException {
+	public void cargarInformacionRestaurante(File archivoIngredientes, File archivoMenu, File archivoCombos) throws IOException, IngredienteRepetidoException, ProductoRepetidoException {
 		cargarIngredientes(archivoIngredientes);
 		cargarMenu(archivoMenu);
 		cargarCombos(archivoCombos);
 		crearCombos();
 	}
 	
-	private void cargarIngredientes(File archivoIngredientes) throws IOException {
-		BufferedReader br = new BufferedReader(new FileReader(archivoIngredientes));
-		String linea = br.readLine();
-		while (linea != null) {
-			String[] partes = linea.split(";");
-			String nombreIngrediente = partes[0];
-			int costoAd = Integer.parseInt(partes[1]);
-			
-			
-			Ingrediente ingredienteNuevo = new Ingrediente(nombreIngrediente, costoAd);
-			ingredientes.add(ingredienteNuevo);
-			linea = br.readLine();
-			}
-		br.close();
-		
-			
-			
-			
-		}
-		
-		
-	
-		
-	
-	
-	private void cargarMenu(File archivoMenu) throws IOException {
-		BufferedReader br = new BufferedReader(new FileReader(archivoMenu));
-		String linea = br.readLine();
-		while (linea != null) {
-			String[] partes = linea.split(";");
-			String nombreProducto = partes[0];
-			int precioProducto = Integer.parseInt(partes[1]);
-			
-			
-			ProductoMenu ProductoNuevoMenu = new ProductoMenu(nombreProducto, precioProducto);
-			menuBase.add(ProductoNuevoMenu);
-			linea = br.readLine();
-			}
-		br.close();
-	
-		}
+	private void cargarIngredientes(File archivoIngredientes) throws IOException, IngredienteRepetidoException {
+	    BufferedReader br = new BufferedReader(new FileReader(archivoIngredientes));
+	    String linea = br.readLine();
+	    while (linea != null) {
+	        String[] partes = linea.split(";");
+	        String nombreIngrediente = partes[0];
+	        int costoAd = Integer.parseInt(partes[1]);
+
+	        for (Ingrediente ingrediente : ingredientes) {
+	            if (ingrediente.getNombre().equals(nombreIngrediente)) {
+	                throw new IngredienteRepetidoException(nombreIngrediente);
+	            }
+	        }
+
+	        Ingrediente ingredienteNuevo = new Ingrediente(nombreIngrediente, costoAd);
+	        ingredientes.add(ingredienteNuevo);
+	        linea = br.readLine();
+	    }
+	    br.close();
+	}
+
+	private void cargarMenu(File archivoMenu) throws IOException, ProductoRepetidoException {
+	    BufferedReader br = new BufferedReader(new FileReader(archivoMenu));
+	    String linea = br.readLine();
+	    while (linea != null) {
+	        String[] partes = linea.split(";");
+	        String nombreProducto = partes[0];
+	        int precioProducto = Integer.parseInt(partes[1]);
+
+	        for (ProductoMenu producto : menuBase) {
+	            if (producto.getNombre().equals(nombreProducto)) {
+	                throw new ProductoRepetidoException(nombreProducto);
+	            }
+	        }
+
+	        ProductoMenu ProductoNuevoMenu = new ProductoMenu(nombreProducto, precioProducto);
+	        menuBase.add(ProductoNuevoMenu);
+	        linea = br.readLine();
+	    }
+	    br.close();
+	}
 	
 	private void cargarCombos(File archivoCombos) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader(archivoCombos));

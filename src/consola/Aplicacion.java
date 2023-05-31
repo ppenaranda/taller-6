@@ -13,7 +13,7 @@ import procesamiento.Pedido;
 import procesamiento.Producto;
 import procesamiento.ProductoAjustado;
 import procesamiento.ProductoMenu;
-
+import exceptions.*;
 
 public class Aplicacion {
 	
@@ -24,7 +24,7 @@ public class Aplicacion {
 	}
 	
 	// Se ejecuta la aplicación y da comienzo a la consola//
-	public void ejecutarAplicacion() throws IOException {
+	public void ejecutarAplicacion() throws IOException, IngredienteRepetidoException, ProductoRepetidoException, PedidoSuperadoException {
 		System.out.println("Bienvenido al menú de restaurante\n");
 		File fileIngrediente = new File("data/ingredientes.txt");
 		File fileMenu = new File("data/menu.txt");
@@ -210,10 +210,10 @@ public class Aplicacion {
 	        System.out.println("Ocurrió un error al obtener el pedido: " + e.getMessage());
 	    }
 	}
-	public void ejecutarIniciarPedido() {
-		String nombre = input("Ingrese su nombre por favor ");
-		String direccion = input("Ingrese su dirección por favor ");
-		restaurante.iniciarPedido(nombre, direccion);
+	public void ejecutarIniciarPedido() throws PedidoSuperadoException {
+	    String nombre = input("Ingrese su nombre por favor ");
+	    String direccion = input("Ingrese su dirección por favor ");
+	    restaurante.iniciarPedido(nombre, direccion);
 	}
 	public void ejecutarCerrarYGuardarPedido() {
 		restaurante.cerrarYGuardarPedido();
@@ -240,7 +240,7 @@ public class Aplicacion {
 	}
 	
 	
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, IngredienteRepetidoException, ProductoRepetidoException, PedidoSuperadoException {
 		// TODO Auto-generated method stub
 		
 		Aplicacion consola = new Aplicacion();
